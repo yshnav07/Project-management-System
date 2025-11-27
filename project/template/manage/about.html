@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>About Us | Taskora</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+      background-color: #f9fafb;
+      color: #1e293b;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #fff;
+      padding: 20px 60px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    header h2 {
+      margin: 0;
+      color: #6b21a8;
+      font-size: 1.6rem;
+      font-weight: 700;
+    }
+
+    .nav-links a {
+      text-decoration: none;
+      margin-left: 25px;
+      color: #0f172a;
+      font-weight: 600;
+      transition: color 0.3s ease;
+    }
+
+    .nav-links a:hover {
+      color: #6b21a8;
+    }
+
+    .about-section {
+      padding: 80px 60px;
+      text-align: center;
+    }
+
+    .about-section h1 {
+      font-size: 2.5rem;
+      color: #6b21a8;
+      margin-bottom: 20px;
+    }
+
+    .about-section p {
+      font-size: 1.1rem;
+      line-height: 1.8;
+      color: #475569;
+      max-width: 900px;
+      margin: 0 auto 20px;
+    }
+
+    .core-values {
+      margin-top: 60px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 30px;
+    }
+
+    .value-box {
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+      padding: 25px;
+      transition: transform 0.3s ease;
+    }
+
+    .value-box:hover {
+      transform: translateY(-5px);
+    }
+
+    .value-box h3 {
+      color: #6b21a8;
+      margin-bottom: 10px;
+      font-size: 1.2rem;
+    }
+
+    .value-box p {
+      font-size: 1rem;
+      color: #475569;
+    }
+
+    footer {
+      text-align: center;
+      padding: 20px;
+      font-size: 0.9rem;
+      color: #64748b;
+      border-top: 1px solid #e2e8f0;
+      background: #fff;
+      margin-top: 50px;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h2>Taskora</h2>
+    <div class="nav-links">
+      <a href="{% url 'index' %}">Home</a>
+      <a href="{% url 'about' %}">About Us</a>
+      <a href="{% url 'user_login' %}">Login</a>
+      <a href="{% url 'admin_login' %}">Admin Login</a>
+    </div>
+  </header>
+
+  <section class="about-section">
+    <h1>About Taskora</h1>
+    <p>
+      Taskora is an innovative project management platform built to simplify how academic projects are handled. 
+      Designed especially for universities and educational institutions, it bridges the gap between 
+      <b>students, guides, and administrators</b> — creating one transparent, collaborative space for managing tasks, tracking progress, and achieving goals.
+    </p>
+
+    <p>
+      At its core, Taskora aims to eliminate the traditional chaos of project coordination — scattered updates, missed deadlines, and unclear responsibilities. 
+      With Taskora, every step of the project lifecycle becomes more organized, from assigning guides to monitoring submissions and ensuring timely evaluations.
+    </p>
+
+    <p>
+      We believe that effective project management isn’t just about tracking tasks — it’s about empowering students to take ownership, 
+      enabling guides to mentor more efficiently, and helping administrators oversee academic excellence with clarity and control.
+    </p>
+
+    <div class="core-values">
+      <div class="value-box">
+        <h3>💡 Innovation</h3>
+        <p>We continuously evolve our platform to adapt to modern educational and project management needs.</p>
+      </div>
+      <div class="value-box">
+        <h3>🤝 Collaboration</h3>
+        <p>We bring together students, guides, and admins in a single space to enhance teamwork and productivity.</p>
+      </div>
+      <div class="value-box">
+        <h3>📈 Transparency</h3>
+        <p>Taskora ensures accountability through clear communication, visible progress tracking, and shared updates.</p>
+      </div>
+      <div class="value-box">
+        <h3>🎯 Efficiency</h3>
+        <p>From task allocation to completion, Taskora helps save time, reduce confusion, and increase project quality.</p>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    © 2025 Christ University | Taskora Project Management System
+  </footer>
+</body>
+</html>

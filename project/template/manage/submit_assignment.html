@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+{% block title %}Submit Assignment{% endblock %}
+
+{% block content %}
+<style>
+  body {
+    background-color: #f8f9fa;
+  }
+
+  .btn-custom {
+    display: inline-block;
+    background: linear-gradient(135deg, #74b9ff, #0984e3);
+    border: none;
+    color: #fff !important;
+    font-weight: 600;
+    padding: 12px 28px;
+    border-radius: 30px;
+    font-size: 16px;
+    transition: all 0.3s ease-in-out;
+    box-shadow: 0 4px 12px rgba(9, 132, 227, 0.3);
+    cursor: pointer;
+  }
+
+  .btn-custom:hover {
+    background: linear-gradient(135deg, #0984e3, #74b9ff);
+    box-shadow: 0 6px 15px rgba(9, 132, 227, 0.5);
+    transform: scale(1.05);
+  }
+
+  .dashboard-card {
+    background: #ffffff;
+    padding: 25px;
+    border-radius: 15px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+    color: #333;
+  }
+
+  .form-control {
+    background: #fff;
+    border: 1px solid #ccc;
+    color: #333;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+  }
+
+  .form-control:focus {
+    border-color: #74b9ff;
+    box-shadow: 0 0 6px rgba(116, 185, 255, 0.5);
+  }
+
+  label {
+    font-weight: 500;
+    color: #555;
+  }
+
+  .alert-deadline {
+    background: #ffe6e6;
+    color: #d63031;
+    padding: 15px;
+    border-radius: 8px;
+    font-weight: 600;
+    border: 1px solid #ff7675;
+    box-shadow: 0 0 10px rgba(255, 118, 117, 0.2);
+  }
+</style>
+
+<div class="container mt-5">
+  <div class="dashboard-card">
+    <h3 class="fw-bold mb-3">📤 Submit: {{ assignment.title }}</h3>
+    <p>{{ assignment.description }}</p>
+
+    {% if assignment.due_date and assignment.due_date < today %}
+      <!-- Deadline passed -->
+      <div class="alert-deadline">
+        ⏳ Deadline has passed ({{ assignment.due_date }}). You cannot submit this assignment anymore.
+      </div>
+    {% else %}
+      <!-- Submission Form -->
+      <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="mb-3">
+          <label class="form-label">Answer</label>
+          <textarea name="text_answer" class="form-control" rows="4" placeholder="Write your answer..."></textarea>
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Upload File (optional)</label>
+          <input type="file" name="file" class="form-control">
+        </div>
+        <button type="submit" class="btn-custom"> Submit</button>
+      </form>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

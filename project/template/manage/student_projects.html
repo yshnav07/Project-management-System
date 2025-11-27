@@ -1,0 +1,52 @@
+{% extends "auth/student_dashboard.html" %}
+{% block title %}My Projects{% endblock %}
+{% block content %}
+<div class="container mt-4">
+  <h2 class="mb-4 text-center">📌 My Projects</h2>
+  <div class="row justify-content-center">
+    {% for project in projects %}
+    <div class="col-md-6 mb-4">
+      <div class="card shadow-sm border-0 rounded-3">
+        <div class="card-body">
+          <h5 class="card-title text-primary">{{ project.title }}</h5>
+          <p class="card-text text-muted">{{ project.description }}</p>
+          <p><strong>Due:</strong> {{ project.due_date }}</p>
+
+          <div class="progress mb-3">
+            <div class="progress-bar bg-success" role="progressbar" style="width: {{ project.progress }}%;"
+              aria-valuenow="{{ project.progress }}" aria-valuemin="0" aria-valuemax="100">
+              {{ project.progress }}%
+            </div>
+          </div>
+
+          <!-- ✅ Update progress and upload report -->
+          <form method="POST" action="{% url 'update-project' project.id %}" enctype="multipart/form-data">
+            {% csrf_token %}
+
+            <div class="mb-3">
+              <label for="progress" class="form-label fw-semibold">Update Progress (%)</label>
+              <input type="number" name="progress" min="0" max="100" value="{{ project.progress }}" class="form-control"
+                required>
+            </div>
+
+            <div class="mb-3">
+              <label for="report_file" class="form-label fw-semibold">Upload Report (optional)</label>
+              <input type="file" name="report_file" accept=".pdf,.doc,.docx" class="form-control">
+              {% if project.report_file %}
+              <p class="mt-2">
+                <a href="{{ project.report_file.url }}" target="_blank">📄 View last uploaded report</a>
+              </p>
+              {% endif %}
+            </div>
+
+            <button type="submit" class="btn btn-success w-100">💾 Save Progress</button>
+          </form>
+        </div>
+      </div>
+    </div>
+    {% empty %}
+    <p class="text-center text-muted">No projects assigned yet.</p>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

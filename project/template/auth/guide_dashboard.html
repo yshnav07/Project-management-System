@@ -1,0 +1,225 @@
+{% extends 'base.html' %}
+
+{% block title %}Guide Dashboard{% endblock %}
+{% block pagetitle %}Welcome, {{ request.user.username }} {% endblock %}
+
+
+{% block content %}
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+
+<style>
+  .gradient-text {
+    background: linear-gradient(90deg, #6b21a8, #9333ea);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .btn-gradient {
+    background: linear-gradient(90deg, #6b21a8, #9333ea);
+    border: none;
+    color: #fff !important;
+    transition: 0.3s;
+  }
+  .btn-gradient:hover {
+    opacity: 0.9;
+    transform: scale(1.05);
+
+  }
+  
+</style>
+
+<!-- 🔹 Quick Actions -->
+<div class="row g-4 mb-4">
+  <div class="col-md-3">
+    <div class="card p-4 text-center shadow-sm rounded-4">
+      <i class="fa-solid fa-user-graduate fa-2x gradient-text mb-2"></i>
+      <h6 class="fw-bold">View Students</h6>
+      <p class="text-muted small">See assigned students</p>
+      <a href="{% url 'guide-students' %}" class="btn btn-sm btn-gradient rounded-pill">Open</a>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="card p-4 text-center shadow-sm rounded-4">
+      <i class="fa-solid fa-file-circle-plus fa-2x gradient-text mb-2"></i>
+      <h6 class="fw-bold">Assign Assignment</h6>
+      <p class="text-muted small">Create new tasks</p>
+      <a href="{% url 'guide-assignments' %}" class="btn btn-sm btn-gradient rounded-pill">Create</a>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="card p-4 text-center shadow-sm rounded-4">
+      <i class="fa-solid fa-diagram-project fa-2x gradient-text mb-2"></i>
+      <h6 class="fw-bold">Create Project</h6>
+      <p class="text-muted small">Supervise projects</p>
+      <a href="{% url 'guide-projects' %}" class="btn btn-sm btn-gradient rounded-pill">New</a>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="card p-4 text-center shadow-sm rounded-4">
+      <i class="fa-solid fa-circle-question fa-2x gradient-text mb-2"></i>
+      <h6 class="fw-bold">Student Queries</h6>
+      <p class="text-muted small">Respond to doubts</p>
+      <a href="{% url 'guide-queries' %}" class="btn btn-sm btn-gradient rounded-pill">View</a>
+    </div>
+  </div>
+</div>
+
+<!-- 🔹 Stats -->
+<div class="row g-4 mb-4">
+  <div class="col-md-3">
+    <div class="card p-3 rounded-4 text-center shadow-sm">
+      <h6 class="text-muted">Students Assigned</h6>
+      <h3 class="fw-bold">{{ students.count }}</h3>
+      <small class="text-success">+{{ new_students_this_month }} this month</small>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="card p-3 rounded-4 text-center shadow-sm">
+      <h6 class="text-muted">Assignments Pending</h6>
+      <h3 class="fw-bold">{{ assignments_pending }}</h3>
+      <small class="text-warning">{{ assignments_pending }} awaiting review</small>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="card p-3 rounded-4 text-center shadow-sm">
+      <h6 class="text-muted">Projects Supervised</h6>
+      <h3 class="fw-bold">{{ project_count }}</h3>
+      <small class="text-info">{{ completed_projects }} completed</small>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="card p-3 rounded-4 text-center shadow-sm">
+      <h6 class="text-muted">Student Queries</h6>
+      <h3 class="fw-bold">{{ query_count }}</h3>
+      <small class="text-danger">{{ urgent_queries }} urgent</small>
+    </div>
+  </div>
+</div>
+
+<!-- 🔹 Charts -->
+<div class="row g-4 mb-4">
+  <div class="col-md-6">
+    <div class="card p-4 rounded-4 shadow-sm">
+      <h5 class="fw-bold mb-3">📊 Assignment Submissions</h5>
+      <canvas id="assignmentChart"></canvas>
+    </div>
+  </div>
+  <div class="col-md-6">
+    <div class="card p-4 rounded-4 shadow-sm">
+      <h5 class="fw-bold mb-3">💡 Project Progress</h5>
+      <canvas id="projectChart"></canvas>
+    </div>
+  </div>
+</div>
+
+<!-- 🔹 Assignments -->
+<div class="card p-4 rounded-4 shadow-sm mb-4">
+  <h5 class="fw-bold mb-3">Active Assignments</h5>
+  {% if assignments %}
+  <div class="table-responsive">
+    <table class="table table-dark table-hover align-middle rounded-4 overflow-hidden">
+      <thead>
+        <tr>
+          <th>Assignment</th>
+          <th>Due Date</th>
+          <th>Submissions</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for a in assignments %}
+        <tr>
+          <td>{{ a.title }}</td>
+          <td>{{ a.due_date|date:"M d, Y" }}</td>
+          <td>{{ a.submissions.count }} / {{ students.count }}</td>
+          <td><a href="{% url 'guide-submissions' a.id %}" class="btn btn-sm btn-gradient">View</a></td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}
+  <p class="text-muted">No assignments yet.</p>
+  {% endif %}
+</div>
+
+<!-- 🔹 Projects -->
+<div class="card p-4 rounded-4 shadow-sm">
+  <h5 class="fw-bold mb-3">Projects Supervised</h5>
+  {% if projects %}
+  <div class="table-responsive">
+    <table class="table table-dark table-hover align-middle rounded-4 overflow-hidden">
+      <thead>
+        <tr>
+          <th>Project</th>
+          <th>Student</th>
+          <th>Progress</th>
+          <th>Due Date</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for p in projects %}
+        <tr>
+          <td>{{ p.title }}</td>
+          <td>{{ p.student.username }}</td>
+          <td>
+            <div class="progress" style="height: 10px;">
+              <div class="progress-bar progress-bar-gradient" style="width: {{ p.progress }}%;"></div>
+            </div>
+            <small>{{ p.progress }}%</small>
+          </td>
+          <td>{{ p.due_date|default:"—" }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}
+  <p class="text-muted">No projects yet.</p>
+  {% endif %}
+  
+</div>
+
+<!-- 🔹 Charts JS -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+const assignmentCtx = document.getElementById('assignmentChart').getContext('2d');
+new Chart(assignmentCtx, {
+  type: 'bar',
+  data: {
+    labels: [{% for a in assignments %}"{{ a.title }}",{% endfor %}],
+    datasets: [{
+      label: 'Submissions',
+      data: [{% for a in assignments %}{{ a.submissions.count }},{% endfor %}],
+      backgroundColor: 'rgba(107, 33, 168, 0.8)',
+      borderColor: 'rgba(147, 51, 234, 1)',
+      borderWidth: 1
+    },{
+      label: 'Pending',
+      data: [{% for a in assignments %}{{ students.count|add:"-a.submissions.count" }},{% endfor %}],
+      backgroundColor: 'rgba(239, 68, 68, 0.8)',
+      borderColor: 'rgba(239, 68, 68, 1)',
+      borderWidth: 1
+    }]
+  },
+  options: { responsive: true, plugins: { legend: { position: 'bottom' } } }
+});
+
+const projectCtx = document.getElementById('projectChart').getContext('2d');
+new Chart(projectCtx, {
+  type: 'doughnut',
+  data: {
+    labels: ['0-25%', '26-50%', '51-75%', '76-100%'],
+    datasets: [{
+      data: [
+        {{ progress_counts.0_25 }},
+        {{ progress_counts.26_50 }},
+        {{ progress_counts.51_75 }},
+        {{ progress_counts.76_100 }}
+      ],
+      backgroundColor: ['#f6c23e', '#36b9cc', '#1cc88a', '#9333ea']
+    }]
+  },
+  options: { responsive: true, plugins: { legend: { position: 'bottom' } } }
+});
+</script>
+{% endblock %}

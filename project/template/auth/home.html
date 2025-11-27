@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Taskora | Project Management System</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+      color: #1e293b;
+      background: #fff;
+      scroll-behavior: smooth;
+    }
+
+    /* Navbar */
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 60px;
+      background: #fff;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    header h2 {
+      margin: 0;
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #6b21a8;
+    }
+
+    .nav-links a {
+      color: #0f172a;
+      text-decoration: none;
+      margin-left: 25px;
+      font-weight: 600;
+      transition: color 0.3s ease;
+    }
+
+    .nav-links a:hover {
+      color: #6b21a8;
+    }
+
+    /* Hero Section */
+    .hero {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 60px 80px;
+      background: #f9fafb;
+      flex-wrap: wrap;
+    }
+
+    .hero-text {
+      flex: 1;
+      min-width: 320px;
+      padding-right: 40px;
+    }
+
+    .hero-text h1 {
+      font-size: 2.5rem;
+      font-weight: 700;
+      margin-bottom: 20px;
+      color: #0f172a;
+    }
+
+    .hero-text p {
+      font-size: 1rem;
+      color: #475569;
+      margin-bottom: 30px;
+      line-height: 1.6;
+    }
+
+    .btn-primary {
+      padding: 12px 26px;
+      border-radius: 6px;
+      background: #6b21a8;
+      color: #fff;
+      text-decoration: none;
+      font-weight: 600;
+      transition: all 0.3s ease;
+    }
+
+    .btn-primary:hover {
+      background: #4c1d95;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 10px rgba(107,33,168,0.3);
+    }
+
+    .hero-img {
+      flex: 1;
+      min-width: 320px;
+      display: flex;
+      justify-content: center;
+    }
+
+    .hero-img img {
+      max-width: 100%;
+      border-radius: 10px;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.1);
+    }
+
+    /* Explore Section */
+    .explore {
+      padding: 80px 20px;
+      text-align: center;
+      background: #fff;
+    }
+
+    .explore h2 {
+      font-size: 2rem;
+      margin-bottom: 20px;
+      font-weight: 700;
+      color: #0f172a;
+    }
+
+    .explore p {
+      max-width: 750px;
+      margin: auto;
+      font-size: 1.1rem;
+      color: #475569;
+      line-height: 1.6;
+    }
+
+    .features {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 30px;
+      margin-top: 50px;
+    }
+
+    /* Feature Boxes - Light Theme */
+    .feature-box {
+      border-radius: 14px;
+      padding: 30px 25px;
+      background: #f8fafc;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+      transition: all 0.3s ease;
+      border: 1px solid #e2e8f0;
+    }
+
+    .feature-box:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 10px 22px rgba(0,0,0,0.08);
+    }
+
+    .feature-box h3 {
+      font-size: 1.4rem;
+      margin-bottom: 12px;
+    }
+
+    .feature-box p {
+      font-size: 1rem;
+      color: #475569;
+      line-height: 1.6;
+    }
+
+    /* Individual card colors (soft tones) */
+    .progress {
+      background: #eff6ff; /* light blue */
+      border-left: 5px solid #3b82f6;
+    }
+
+    .collaboration {
+      background: #ecfdf5; /* light green */
+      border-left: 5px solid #10b981;
+    }
+
+    .achievement {
+      background: #f5f3ff; /* light purple */
+      border-left: 5px solid #8b5cf6;
+    }
+
+    /* Footer */
+    footer {
+      text-align: center;
+      padding: 20px;
+      font-size: 0.9rem;
+      color: #64748b;
+      border-top: 1px solid #e2e8f0;
+      background: #f9fafb;
+      margin-top: 50px;
+    }
+  </style>
+</head>
+<body>
+  <!-- Navbar -->
+  <header>
+    <h2>Taskora</h2>
+    <div class="nav-links">
+      <a href="{% url 'index' %}">Home</a>
+      <a href="{% url 'about' %}">About Us</a>
+      <a href="{% url 'user_login' %}">Login</a>
+      <a href="{% url 'admin_login' %}">Admin Login</a>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="hero-text">
+      <h1>Manage Projects With Ease</h1>
+      <p>
+        A centralized platform for students, guides, and administrators to collaborate, 
+        assign tasks, track progress, and deliver projects efficiently. Stay organized, 
+        improve teamwork, and achieve milestones faster.
+      </p>
+      <a href="#explore" class="btn-primary">Learn More</a>
+    </div>
+    <div class="hero-img">
+      <img src="https://img.freepik.com/free-photo/close-up-business-people-analyzing-financial-graphs-office_1098-2105.jpg" alt="Project Management">
+    </div>
+  </section>
+
+  <!-- Explore Section -->
+  <section id="explore" class="explore">
+    <h2>Explore Taskora</h2>
+    <p>Discover how Taskora empowers students, guides, and administrators with a seamless project management experience.</p>
+
+    <div class="features">
+      <div class="feature-box progress">
+        <h3>📊 Track Progress</h3>
+        <p>Monitor project milestones, deadlines, and deliverables using intuitive dashboards and progress bars.</p>
+      </div>
+
+      <div class="feature-box collaboration">
+        <h3>🤝 Team Collaboration</h3>
+        <p>Connect effortlessly with teammates and guides through messaging and feedback tools for effective coordination.</p>
+      </div>
+
+      <div class="feature-box achievement">
+        <h3>🚀 Achieve Faster</h3>
+        <p>Stay productive, manage multiple tasks efficiently, and deliver projects ahead of time with smart planning.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    © 2025 Christ University | Project Management System
+  </footer>
+</body>
+</html>

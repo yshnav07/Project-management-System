@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% block title %}Student Queries{% endblock %}
+
+{% block sidebar %}
+<a href="{% url 'guide-dashboard' %}" class="nav-link text-white d-flex align-items-center">
+  <span class="me-2">📊</span> Dashboard
+</a>
+<a href="{% url 'guide-students' %}" class="nav-link text-white d-flex align-items-center">
+  <span class="me-2">👨‍🎓</span> Manage Students
+</a>
+<a href="{% url 'guide-assignments' %}" class="nav-link text-white d-flex align-items-center active">
+  <span class="me-2">📝</span> Assignments
+</a>
+<a href="{% url 'guide-projects' %}" class="nav-link text-white d-flex align-items-center">
+  <span class="me-2">💡</span> Projects
+</a>
+<a href="{% url 'guide-queries' %}" class="nav-link text-white d-flex align-items-center">
+  <span class="me-2">❓</span> Queries
+</a>
+
+<a href="{% url 'guide-profile' %}" class="nav-link text-white d-flex align-items-center">
+  <span class="me-2">⚙️</span> Settings
+</a>
+{% endblock %}
+
+{% block content %}
+<h3>Student Queries</h3>
+
+<ul class="list-group">
+    {% for q in queries %}
+    <li class="list-group-item">
+        <strong>{{ q.student.username }}</strong>: {{ q.message }}
+        <small class="text-muted">({{ q.created_at|date:"M d, Y H:i" }})</small>
+
+        {% if q.reply %}
+        <span class="badge bg-success">Replied</span>
+        <p><em>Guide Response:</em> {{ q.reply }}</p>
+        {% else %}
+        <span class="badge bg-warning">Awaiting Reply</span>
+
+        <!-- Reply form -->
+        <form method="post" action="{% url 'reply_query' q.id %}" class="mt-2">
+            {% csrf_token %}
+            <div class="input-group">
+                <input type="text" name="reply" class="form-control" placeholder="Write a reply..." required>
+                <button type="submit" class="btn btn-primary">Reply</button>
+            </div>
+        </form>
+        {% endif %}
+    </li>
+    {% empty %}
+    <li class="list-group-item">No queries found.</li>
+    {% endfor %}
+</ul>
+{% endblock %}

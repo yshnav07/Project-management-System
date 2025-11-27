@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Add User | Taskora</title>
+  <style>
+    body {
+      background: #f9fafb;
+      color: #1f2937;
+      font-family: "Segoe UI", Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+
+    header {
+      background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+      color: white;
+      text-align: center;
+      padding: 20px 0;
+      font-size: 1.8em;
+      font-weight: bold;
+      letter-spacing: 0.5px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    }
+
+    .container {
+      max-width: 400px;
+      margin: 60px auto;
+      background: white;
+      border-radius: 12px;
+      padding: 30px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    }
+
+    h2 {
+      text-align: center;
+      color: #1e3a8a;
+      margin-bottom: 20px;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      border-radius: 8px;
+      border: 1px solid #cbd5e1;
+      font-size: 15px;
+    }
+
+    button {
+      width: 100%;
+      background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+      color: white;
+      font-weight: bold;
+      border: none;
+      border-radius: 8px;
+      padding: 10px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    button:hover {
+      background: linear-gradient(135deg, #5a0eb5 0%, #1e63d0 100%);
+    }
+
+    p {
+      color: #f59e0b;
+      text-align: center;
+      margin-top: 10px;
+      font-weight: 500;
+    }
+
+    .back-link {
+      display: block;
+      margin-top: 15px;
+      text-align: center;
+      color: #2563eb;
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    .back-link:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <header>Taskora Admin Panel</header>
+
+  <div class="container">
+    <h2>Add User</h2>
+    <form method="POST">
+      {% csrf_token %}
+      <input type="text" name="name" placeholder="Enter Name" required>
+      <input type="text" name="username" placeholder="Enter Username" required>
+      <input type="email" name="email" placeholder="Enter Email" required>
+      <input type="password" name="password" placeholder="Enter Password" required>
+
+      <select name="role" id="role-select" required onchange="toggleGuideSelect()">
+        <option value="">-- Select Role --</option>
+        <option value="student">Student</option>
+        <option value="guide">Guide</option>
+      </select>
+
+      <select name="assigned_guide" id="guide-select" style="display: none;">
+        <option value="">-- Select Guide --</option>
+        {% for guide in guides %}
+        <option value="{{ guide.id }}">{{ guide.username }}</option>
+        {% endfor %}
+      </select>
+
+      <script>
+        function toggleGuideSelect() {
+          const roleSelect = document.getElementById('role-select');
+          const guideSelect = document.getElementById('guide-select');
+          if (roleSelect.value === 'student') {
+            guideSelect.style.display = 'block';
+            guideSelect.required = true;
+          } else {
+            guideSelect.style.display = 'none';
+            guideSelect.required = false;
+            guideSelect.value = '';
+          }
+        }
+      </script>
+
+      <button type="submit">Add User</button>
+    </form>
+
+
+    <a href="{% url 'admin-dashboard' %}" class="back-link">⬅ Back to Dashboard</a>
+  </div>
+</body>
+</html>

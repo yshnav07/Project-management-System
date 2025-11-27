@@ -1,0 +1,106 @@
+{% extends "base.html" %}
+{% block title %}Guide Projects{% endblock %}
+
+
+{% block sidebar %}
+<a href="{% url 'guide-dashboard' %}" class="nav-link text-white d-flex align-items-center">
+  <span class="me-2">📊</span> Dashboard
+</a>
+<a href="{% url 'guide-students' %}" class="nav-link text-white d-flex align-items-center">
+  <span class="me-2">👨‍🎓</span> Manage Students
+</a>
+<a href="{% url 'guide-assignments' %}" class="nav-link text-white d-flex align-items-center active">
+  <span class="me-2">📝</span> Assignments
+</a>
+<a href="{% url 'guide-projects' %}" class="nav-link text-white d-flex align-items-center">
+  <span class="me-2">💡</span> Projects
+</a>
+<a href="{% url 'guide-queries' %}" class="nav-link text-white d-flex align-items-center">
+  <span class="me-2">❓</span> Queries
+</a>
+
+<a href="{% url 'guide-profile' %}" class="nav-link text-white d-flex align-items-center">
+  <span class="me-2">⚙️</span> Settings
+</a>
+{% endblock %}
+{% block content %}
+<div class="container mt-4">
+
+
+
+  <h2 class="mb-4">📊 Manage Student Projects</h2>
+
+  <!-- Assign Project Form -->
+  <div class="card shadow-sm mb-4 border-0">
+    <div class="card-body">
+      <h5 class="card-title">➕ Assign New Project</h5>
+      <form method="POST">
+        {% csrf_token %}
+        <div class="mb-3">
+          <label class="form-label">Student</label>
+          <select name="student" class="form-select" required>
+            {% for s in students %}
+            <option value="{{ s.id }}">{{ s.username }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Title</label>
+          <input type="text" name="title" class="form-control" required>
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Description</label>
+          <textarea name="description" class="form-control" required></textarea>
+        </div>
+        <div class="mb-3">
+          <label for="due_date" class="form-label">Due Date</label>
+          <input type="date" id="due_date" name="due_date" class="form-control">
+        </div>
+        <button type="submit" class="btn btn-success">Assign</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Projects List -->
+  <h4 class="mb-3">📋 Assigned Projects</h4>
+  <div class="row">
+    {% for project in projects %}
+    <div class="col-md-6 mb-3">
+      <div class="card shadow-sm border-0">
+        <div class="card-body">
+          <h5 class="card-title">{{ project.title }}</h5>
+          <p class="card-text text-muted">{{ project.description }}</p>
+          <p><strong>Student:</strong> {{ project.student.username }}</p>
+          <p><strong>Due:</strong> {{ project.due_date }}</p>
+
+          <div class="progress mb-3">
+            <div class="progress-bar bg-info" role="progressbar" style="width: {{ project.progress }}%;"
+              aria-valuenow="{{ project.progress }}" aria-valuemin="0" aria-valuemax="100">
+              {{ project.progress }}%
+            </div>
+          </div>
+          {% if project.report_file %}
+          <p class="mt-2">
+            📄 <a href="{{ project.report_file.url }}" target="_blank" style="color:#00bfa5; text-decoration:none;">
+              View Submitted Report
+            </a>
+          </p>
+          {% else %}
+          <p class="text-muted mt-2">No report submitted yet.</p>
+          {% endif %}
+
+          <!-- Action Buttons -->
+          <div class="d-flex gap-2">
+            <a href="{% url 'guide-update-project' project.id %}" class="btn btn-primary btn-sm">✏️ Update</a>
+            <a href="{% url 'delete-project' project.id %}" class="btn btn-danger btn-sm"
+              onclick="return confirm('Are you sure you want to delete this project?');">🗑 Delete</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% empty %}
+    <p>No projects yet.</p>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+
+{% block title %}Login · Taskora{% endblock %}
+
+{% block content %}
+<div class="d-flex align-items-center justify-content-center" style="min-height: 85vh; background:#f8fafc;">
+  <div class="card shadow-lg border-0 rounded-4 overflow-hidden" style="max-width:900px; width:100%;">
+    <div class="row g-0">
+
+      <!-- Left Illustration -->
+      <div class="col-md-6 d-none d-md-flex align-items-center bg-light">
+        <img src="https://images.unsplash.com/photo-1529070538774-1843cb3265df" alt="Login Illustration"
+          class="img-fluid w-100 h-100 object-fit-cover">
+      </div>
+
+      <!-- Right Form -->
+      <div class="col-md-6 p-5 bg-white">
+        <h2 class="fw-bold text-center mb-4" style="color:#6b21a8;">Login</h2>
+        <form method="post">
+          {% csrf_token %}
+          <div class="mb-3">
+            <label for="id_username" class="form-label fw-semibold">Username</label>
+            <input type="text" id="id_username" name="username" class="form-control rounded-3"
+              placeholder="Enter username" required>
+          </div>
+          <div class="mb-3">
+            <label for="id_password" class="form-label fw-semibold">Password</label>
+            <input type="password" id="id_password" name="password" class="form-control rounded-3"
+              placeholder="Enter password" required>
+          </div>
+          <button type="submit" class="btn w-100 py-2 fw-bold text-white rounded-3"
+            style="background: linear-gradient(90deg,#6b21a8,#9333ea);">
+            Sign in
+          </button>
+        </form>
+        <div class="text-center mt-3">
+          <a href="{% url 'index' %}" class="text-decoration-none small text-muted">
+            ← Back to Home
+          </a>
+        </div>
+        <p class="text-center mt-3 text-muted small">
+          Use the credentials provided by Admin
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

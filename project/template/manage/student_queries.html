@@ -1,0 +1,32 @@
+{% extends "auth/student_dashboard.html" %}
+
+{% block content %}
+<h2>My Queries</h2>
+
+<!-- Query Form -->
+<form method="post">
+    {% csrf_token %}
+    <textarea name="message" placeholder="Ask your guide a question..." rows="3" cols="50"></textarea>
+    <br>
+    <button type="submit">Submit</button>
+</form>
+
+<hr>
+
+<!-- List of Queries -->
+{% for query in queries %}
+<div style="margin-bottom: 20px; padding: 10px; border: 1px solid #ccc;">
+    <p><strong>You asked:</strong> {{ query.message }}</p>
+    <p><small>📅 {{ query.created_at }}</small></p>
+
+    {% if query.reply %}
+    <p><strong>Guide replied:</strong> {{ query.reply }}</p>
+    <p><small>✅ {{ query.replied_at }}</small></p>
+    {% else %}
+    <p style="color: gray;"><em>⏳ Awaiting reply...</em></p>
+    {% endif %}
+</div>
+{% empty %}
+<p>No queries yet.</p>
+{% endfor %}
+{% endblock %}

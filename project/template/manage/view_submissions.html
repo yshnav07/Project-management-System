@@ -1,0 +1,108 @@
+{% extends "base.html" %}
+{% block title %}Submissions — {{ assignment.title }}{% endblock %}
+
+{% block sidebar %}
+<a href="{% url 'guide-dashboard' %}" class="nav-link text-white d-flex align-items-center">
+  <span class="me-2">📊</span> Dashboard
+</a>
+<a href="{% url 'guide-students' %}" class="nav-link text-white d-flex align-items-center">
+  <span class="me-2">👨‍🎓</span> Manage Students
+</a>
+<a href="{% url 'guide-assignments' %}" class="nav-link text-white d-flex align-items-center active">
+  <span class="me-2">📝</span> Assignments
+</a>
+<a href="{% url 'guide-projects' %}" class="nav-link text-white d-flex align-items-center">
+  <span class="me-2">💡</span> Projects
+</a>
+<a href="{% url 'guide-queries' %}" class="nav-link text-white d-flex align-items-center">
+  <span class="me-2">❓</span> Queries
+</a>
+<a href="#" class="nav-link text-white d-flex align-items-center">
+  <span class="me-2">📈</span> Grades
+</a>
+<a href="{% url 'guide-profile' %}" class="nav-link text-white d-flex align-items-center">
+  <span class="me-2">⚙️</span> Settings
+</a>
+{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+
+  <!-- Header Card -->
+  <div class="dashboard-card mb-4 text-start">
+    <h2 class="fw-bold text-primary">📨 Submissions for: {{ assignment.title }}</h2>
+    <p class="mb-1"><b>Due Date:</b> {{ assignment.due_date|default:"—" }}</p>
+    <p class="mb-0">
+      <b>Assigned To:</b>
+      {% if assignment.target_group == "all" %}
+        All Students
+      {% else %}
+        My Assigned Students
+      {% endif %}
+    </p>
+  </div>
+
+  <!-- Submissions Table -->
+  <div class="card shadow-sm border-0">
+    <div class="card-body">
+      <div class="table-responsive">
+        <table class="table table-hover align-middle">
+          <thead class="table-light">
+  <tr>
+    <th> Student</th>
+    <th> Status</th>
+    <th>Submitted At</th>
+    <th> Text Answer</th>
+    <th> File</th>
+    <th> AI Detection</th>
+  </tr>
+</thead>
+<tbody>
+  {% for row in student_status %}
+    <tr>
+      <td class="fw-semibold">{{ row.student.username }}</td>
+      <td>
+        {% if row.status == "submitted" %}
+          <span class="badge bg-success"> Submitted</span>
+        {% else %}
+          <span class="badge bg-warning text-dark">Pending</span>
+        {% endif %}
+      </td>
+      <td>
+        {% if row.submitted_at %}
+          {{ row.submitted_at|date:"M d, Y H:i" }}
+        {% else %}—{% endif %}
+      </td>
+      <td>
+        {% if row.text_answer %}
+          <span class="text-truncate d-inline-block" style="max-width: 250px;" title="{{ row.text_answer }}">
+            {{ row.text_answer }}
+          </span>
+        {% else %}—{% endif %}
+      </td>
+      <td>
+        {% if row.file %}
+          <a href="{{ row.file.url }}" target="_blank" class="btn btn-sm btn-outline-primary">Download</a>
+        {% else %}—{% endif %}
+      </td>
+      <td>
+        {% if row.status == "submitted" %}
+          <span class="badge {% if row.ai_score > 70 %}bg-danger{% elif row.ai_score > 40 %}bg-warning text-dark{% else %}bg-success{% endif %}">
+            {{ row.ai_score|floatformat:1 }}%
+          </span>
+        {% else %}
+          —
+        {% endif %}
+      </td>
+    </tr>
+  {% endfor %}
+</tbody>
+
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <a href="{% url 'guide-assignments' %}" class="btn btn-secondary mt-4">← Back to Assignments</a>
+</div>
+{% endblock %}

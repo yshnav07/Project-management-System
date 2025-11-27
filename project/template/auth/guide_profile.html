@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+{% block title %}Guide Profile — Project Management System{% endblock %}
+
+{% block sidebar %}
+<a href="{% url 'guide-dashboard' %}" class="nav-link text-white d-flex align-items-center">
+  <span class="me-2">📊</span> Dashboard
+</a>
+<a href="{% url 'guide-students' %}" class="nav-link text-white d-flex align-items-center">
+  <span class="me-2">👨‍🎓</span> Manage Students
+</a>
+<a href="{% url 'guide-assignments' %}" class="nav-link text-white d-flex align-items-center active">
+  <span class="me-2">📝</span> Assignments
+</a>
+<a href="{% url 'guide-projects' %}" class="nav-link text-white d-flex align-items-center">
+  <span class="me-2">💡</span> Projects
+</a>
+<a href="{% url 'guide-queries' %}" class="nav-link text-white d-flex align-items-center">
+  <span class="me-2">❓</span> Queries
+</a>
+
+<a href="{% url 'guide-profile' %}" class="nav-link text-white d-flex align-items-center">
+  <span class="me-2">⚙️</span> Settings
+</a>
+{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+
+  <!-- Profile Header -->
+  <div class="dashboard-card mb-4 text-center">
+    {% if request.user.profile_picture %}
+      <img src="{{ request.user.profile_picture.url }}" 
+           class="rounded-circle mb-3" 
+           style="width:120px; height:120px; object-fit:cover;" alt="Profile">
+    {% else %}
+      <div class="icon-circle mb-3">👨‍🏫</div>
+    {% endif %}
+    <h2 class="fw-bold text-primary">Guide Profile</h2>
+    <p class="text-muted">Manage your account details below</p>
+  </div>
+
+  <!-- Profile Info Card -->
+  <div class="card shadow-sm border-0 rounded-3">
+    <div class="card-body">
+      <h5 class="fw-bold mb-3">👤 Account Information</h5>
+      <ul class="list-group list-group-flush">
+        <li class="list-group-item"><b>Username:</b> {{ request.user.username }}</li>
+        <li class="list-group-item"><b>Email:</b> {{ request.user.email|default:"—" }}</li>
+        <li class="list-group-item"><b>Role:</b> <span class="badge bg-info">Guide</span></li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Upload Profile Picture -->
+  <div class="card shadow-sm border-0 rounded-3 mt-4 p-3">
+    <h5 class="fw-bold">📸 Update Profile Picture</h5>
+    <form method="post" enctype="multipart/form-data">
+      {% csrf_token %}
+      <input type="file" name="profile_picture" class="form-control mb-3" required>
+      <button type="submit" class="btn btn-primary">Upload</button>
+    </form>
+  </div>
+
+  <!-- Back Button -->
+  <div class="mt-4">
+    <a href="{% url 'guide-dashboard' %}" class="btn btn-secondary">⬅ Back to Dashboard</a>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,135 @@
+{% extends 'base.html' %}
+
+{% block title %}Student Dashboard{% endblock %}
+
+{% block pagetitle %}
+Welcome, {{ request.user.username }} 👋
+{% endblock %}
+{% block content %}
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+
+<style>
+  .gradient-text {
+    background: linear-gradient(90deg, #6b21a8, #9333ea);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .btn-gradient {
+    background: linear-gradient(90deg, #6b21a8, #9333ea);
+    border: none;
+    color: #fff !important;
+    transition: 0.3s;
+  }
+  .btn-gradient:hover {
+    opacity: 0.9;
+    transform: scale(1.05);
+  }
+  .progress-bar-gradient {
+    background: linear-gradient(90deg, #6b21a8, #9333ea);
+  }
+  .card .card-subtitle {
+    color: #cbd5e1 !important;
+  }
+  .icon-glow {
+    font-size: 2.5rem;
+    background: linear-gradient(90deg, #6b21a8, #9333ea);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 0 0 10px rgba(147, 51, 234, 0.5);
+  }
+</style>
+
+<!-- 🔹 Quick Actions -->
+<div class="row g-4 mb-4">
+  <div class="col-md-3">
+    <div class="card p-4 text-center shadow-sm rounded-4">
+      <i class="fa-solid fa-file-upload icon-glow mb-2"></i>
+      <h6 class="fw-bold">Submit Assignment</h6>
+      <p class="text-muted small">Upload your work</p>
+      <a href="{% url 'student-assignments' %}" class="btn btn-sm btn-gradient rounded-pill">Submit</a>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="card p-4 text-center shadow-sm rounded-4">
+      <i class="fa-solid fa-diagram-project icon-glow mb-2"></i>
+      <h6 class="fw-bold">Join Project</h6>
+      <p class="text-muted small">Collaborate with guide</p>
+      <a href="{% url 'student-projects' %}" class="btn btn-sm btn-gradient rounded-pill">Join</a>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="card p-4 text-center shadow-sm rounded-4">
+      <i class="fa-solid fa-circle-question icon-glow mb-2"></i>
+      <h6 class="fw-bold">Raise Query</h6>
+      <p class="text-muted small">Ask guide a question</p>
+      <a href="{% url 'student-queries' %}" class="btn btn-sm btn-gradient rounded-pill">Ask</a>
+    </div>
+  </div>
+  
+  <!-- 🔹 New Card: Text Summarization -->
+  <div class="col-md-3">
+    <div class="card p-4 text-center shadow-sm rounded-4">
+      <i class="fa-solid fa-align-left icon-glow mb-2"></i>
+      <h6 class="fw-bold">Text Summarizer</h6>
+      <p class="text-muted small">Summarize long text easily</p>
+      <a href="{% url 'text-summarizer' %}" class="btn btn-sm btn-gradient rounded-pill">Try Now</a>
+    </div>
+  </div>
+</div>
+
+<!-- 🔹 Projects Table -->
+<div class="card p-4 rounded-4 shadow-sm mb-4">
+  <h5 class="fw-bold mb-3 gradient-text">Your Projects</h5>
+  {% if projects %}
+  <table class="table table-dark table-hover align-middle">
+    <thead>
+      <tr>
+        <th>Project</th>
+        <th>Guide</th>
+        <th>Progress</th>
+        <th>Due Date</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for p in projects %}
+      <tr>
+        <td>{{ p.title }}</td>
+        <td>{{ p.guide.username }}</td>
+        <td>
+          <div class="progress rounded-pill" style="height: 8px;">
+            <div class="progress-bar progress-bar-gradient"
+              role="progressbar" style="width: {{ p.progress }}%;"
+              aria-valuenow="{{ p.progress }}" aria-valuemin="0" aria-valuemax="100">
+            </div>
+          </div>
+          <small>{{ p.progress }}%</small>
+        </td>
+        <td>{{ p.due_date|default:"—" }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <p class="text-muted">No projects assigned yet.</p>
+  {% endif %}
+</div>
+
+<!-- 🔹 Floating Chatbot -->
+<div id="chatbot-box" 
+     style="display:none;position:fixed;bottom:90px;right:20px;width:320px;
+     background:#fff;border:1px solid #ccc;border-radius:10px;box-shadow:0 4px 8px rgba(0,0,0,0.3);
+     z-index:1000;overflow:hidden;">
+    <div style="background:#6b21a8;color:white;padding:10px;font-weight:bold;
+        display:flex;justify-content:space-between;align-items:center;">
+        AI Assistant 🤖
+        <span id="chatbot-close" style="cursor:pointer;">✖</span>
+    </div>
+    <div id="chat-messages" style="height:250px;overflow-y:auto;padding:10px;font-size:14px;"></div>
+    <form id="chat-form" style="display:flex;border-top:1px solid #ccc;">
+        {% csrf_token %}
+        <input type="text" id="chat-input" placeholder="Ask something..." 
+               style="flex:1;padding:8px;border:none;">
+        <button type="submit" style="padding:8px;background:#6b21a8;color:white;border:none;">Send</button>
+    </form>
+</div>
+{% endblock %}

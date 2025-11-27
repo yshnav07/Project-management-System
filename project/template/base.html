@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>{% block title %}Dashboard{% endblock %}</title>
+
+  <!-- Bootstrap + FontAwesome -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+
+  <style>
+    /* page base */
+    body {
+      background: #fdfcf7; /* cream */
+      font-family: 'Poppins', sans-serif;
+      color: #1e293b;
+      margin: 0;
+    }
+
+    /* navbar */
+    .navbar-gradient {
+      background: linear-gradient(90deg, #6b21a8, #9333ea);
+    }
+    .navbar-brand {
+      color: #fff !important;
+      font-weight: 700;
+      letter-spacing: 1px;
+    }
+    .navbar .nav-link {
+      color: #f3e8ff !important;
+      font-weight: 500;
+      transition: .15s;
+    }
+    .navbar .nav-link:hover {
+      color: #fff !important;
+      text-shadow: 0 0 6px rgba(255,255,255,0.2);
+      transform: translateY(-1px);
+    }
+
+    /* content wrapper */
+    .content-wrapper {
+      padding: 28px;
+      min-height: calc(100vh - 68px);
+    }
+
+    /* cards (global) */
+    .card {
+      background: #ffffff;
+      border: 1px solid #e8eef7;
+      border-radius: 16px;
+      box-shadow: 0 6px 18px rgba(20,20,30,0.04);
+      transition: transform .15s ease, box-shadow .15s ease;
+    }
+    .card:hover { transform: translateY(-4px); box-shadow: 0 12px 30px rgba(20,20,30,0.06); }
+
+    /* profile avatar in navbar */
+    .nav-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      background: linear-gradient(90deg,#6b21a8,#9333ea);
+      color: #fff;
+      font-weight:600;
+    }
+
+    /* badges, dropdowns */
+    .dropdown-menu { border-radius: 12px; box-shadow: 0 8px 26px rgba(20,20,30,0.08); }
+    footer {
+      text-align: center;
+      padding: 20px;
+      font-size: 0.9rem;
+      color: #64748b;
+      border-top: 1px solid #e2e8f0;
+      background: #f9fafb;
+      margin-top: 50px;
+    }
+  </style>
+</head>
+
+<body>
+  <!-- NAVBAR -->
+  <nav class="navbar navbar-expand-lg navbar-gradient navbar-dark">
+    <div class="container-fluid px-4">
+      <a class="navbar-brand" href="{% url 'index' %}">Taskora</a>
+
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto align-items-center">
+          {% if request.user.is_authenticated %}
+            {% if request.user.role == "guide" %}
+              <!-- Guide Links (match urls.py names) -->
+              <li class="nav-item"><a class="nav-link" href="{% url 'guide-dashboard' %}">Dashboard</a></li>
+              <li class="nav-item"><a class="nav-link" href="{% url 'guide-students' %}">Students</a></li>
+              <li class="nav-item"><a class="nav-link" href="{% url 'guide-projects' %}">Projects</a></li>
+              <li class="nav-item"><a class="nav-link" href="{% url 'guide-assignments' %}">Assignments</a></li>
+              <li class="nav-item"><a class="nav-link" href="{% url 'guide-queries' %}">Queries</a></li>
+
+            {% elif request.user.role == "student" %}
+              <!-- Student Links (match urls.py names) -->
+              <li class="nav-item"><a class="nav-link" href="{% url 'student-dashboard' %}">Dashboard</a></li>
+              <li class="nav-item"><a class="nav-link" href="{% url 'student-assignments' %}">Assignments</a></li>
+              <li class="nav-item"><a class="nav-link" href="{% url 'student-projects' %}">Projects</a></li>
+              <li class="nav-item"><a class="nav-link" href="{% url 'student-queries' %}">Queries</a></li>
+
+            {% elif request.user.role == "admin" or request.user.is_superuser %}
+              <!-- Admin Links (if you want more admin links, add them) -->
+              <li class="nav-item"><a class="nav-link" href="{% url 'admin-dashboard' %}">Admin</a></li>
+            {% endif %}
+
+            <!-- Notifications (if notifications context exists) -->
+            <li class="nav-item dropdown mx-2">
+              <a class="nav-link position-relative" href="#" id="notifDropdown" data-bs-toggle="dropdown">
+                <i class="fa-regular fa-bell"></i>
+                {% if notifications and notifications.count > 0 %}
+                  <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                    {{ notifications.count }}
+                  </span>
+                {% endif %}
+              </a>
+              <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="notifDropdown">
+                {% if notifications %}
+                  {% for n in notifications %}
+                    <li><a class="dropdown-item small" href="{% url 'read-notification' n.id %}">{{ n.message }}</a></li>
+                  {% endfor %}
+                {% else %}
+                  <li><span class="dropdown-item small text-muted">No new notifications</span></li>
+                {% endif %}
+              </ul>
+            </li>
+
+            <!-- User dropdown -->
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle d-flex align-items-center gap-2" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown">
+                <span class="nav-avatar">{{ request.user.username|first|upper }}</span>
+                <span class="d-none d-lg-inline">{{ request.user.username }}</span>
+              </a>
+              <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                <!-- Profile link uses role-based pattern (matches your urls) -->
+                <li><a class="dropdown-item" href="{% url request.user.role|add:'-profile' %}">Profile</a></li>
+                <li><hr class="dropdown-divider"></li>
+                <li><a class="dropdown-item" href="{% url request.user.role|add:'-logout' %}">Logout</a></li>
+              </ul>
+            </li>
+
+          {% else %}
+            <!-- not authenticated -->
+            <li class="nav-item"><a class="nav-link" href="{% url 'user_login' %}">Login</a></li>
+          {% endif %}
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main content -->
+  <div class="content-wrapper container-fluid">
+    <h4 class="fw-bold mb-4">{% block pagetitle %}{% endblock %}</h4>
+
+    {% block content %}{% endblock %}
+    <footer>
+    © 2025 Christ University | Project Management System
+  </footer>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
